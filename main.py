@@ -2,7 +2,7 @@ from tkinter import *
 
 root = Tk()
 # root.attributes('-fullscreen',True) // this attribute show frame in full screen
-root.title("Parking System")
+root.title("Parking System Design by DNR")
 
 
 def showTitle():
