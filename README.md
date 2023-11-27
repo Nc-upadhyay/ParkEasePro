@@ -6,3 +6,5 @@ Language: Python version => Python 3.11.3
 IDE => Pycharm
 Project Member=> Dhruv Kumar, Rachit, Naveen
 
+1)pip install Pillow OR pip install PIL -> use for installing pil or pillow package which use for showing images.
+
