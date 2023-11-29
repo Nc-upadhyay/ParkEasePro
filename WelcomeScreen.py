@@ -11,7 +11,6 @@ from PIL import ImageTk, Image
 from authKey import SECRET_KEY
 from dbConnection import mycursor, connection
 
-
 # GUI
 root = Tk()
 root.title("Welcome Screen")
@@ -66,7 +65,6 @@ def select_from_camera():
 
             with open(IMAGE_PATH1, 'rb') as image_file:
                 img_base64 = base64.b64encode(image_file.read())
-
 
             url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (
                 SECRET_KEY)
@@ -168,25 +166,34 @@ def select_from_file():
     url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
     r = requests.post(url, data=img_base64)
 
-    num_plate = (json.dumps(r.json(), indent=2))
-    info = (list(num_plate.split("candidates")))
-    print("======================")
-    print(info)
-    print(num_plate)
-    plate = info[1]
-    print("plate : ", plate)
-    plate = plate.split(',')[0:3]
-    p = plate[1]
-    print("p : ", p)
-    p1 = p.split(":")
-    print("p1 : ", p1)
-    number = p1[1]
-    print("number : ", number)
-    number = number.replace('"', '')
-    number = number.lstrip()
-    print(number)
+    data = r.json()
+    print(data)
+    results = data.get("results", [])
+    # if results is None
+    first_result = results[0]
+    plate_number = first_result.get("plate", "")
+    print("plate_info===>" + plate_number)
 
-    getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(number)
+    # num_plate = (json.dumps(r.json(), indent=2))
+    # info = (list(num_plate.split("candidates")))
+    # print("======================")
+    # print(info)
+    # print(num_plate)
+    # plate = info[1]
+    # print("plate : ", plate)
+    # plate = plate.split(',')[0:3]
+    # p = plate[1]
+    # print("p : ", p)
+    # p1 = p.split(":")
+    # print("p1 : ", p1)
+    # number = p1[1]
+    # print("number : ", number)
+    # number = number.replace('"', '')
+    # number = number.lstrip()
+
+    print(plate_number)
+
+    getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(plate_number)
     mycursor.execute(getnumber)
     templist = list(mycursor)
     # print(len(templist))
@@ -195,7 +202,7 @@ def select_from_file():
         temp_time = datetime.datetime.now()
         entered_time = temp_time.strftime("%Y %m %d %H %M %S")
         print("entered time ", entered_time)
-        mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(number, entered_time))
+        mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(plate_number, entered_time))
         list_of_globals = globals()
         list_of_globals['fare_text'] = "Vehicle details has been\nentered into the database"
         show_fare()
@@ -204,7 +211,7 @@ def select_from_file():
     else:
         for temp in templist:
             # print(temp)
-            if number == temp[0]:
+            if plate_number == temp[0]:
                 print(temp[1])
                 # result = datetime.datetime.now() - temp[1]
                 current_time = datetime.datetime.now()
@@ -236,7 +243,7 @@ def select_from_file():
 lable1 = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome", font=FONT_BOLD, justify=CENTER, padx=10, pady=10,
                width=140, height=1).grid(row=0)
 
-parking_slot_lable = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD).place(relx=0.8, rely=0.1)
+parking_slot_lable = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD).place(relx=0.7, rely=0.1)
 
 # Creating a photoimage object to use image
 photo = PhotoImage(file="images/admin.png")
