@@ -11,6 +11,7 @@ from PIL import ImageTk, Image
 from authKey import SECRET_KEY
 from dbConnection import mycursor, connection
 
+
 # GUI
 root = Tk()
 root.title("Welcome Screen")
@@ -66,6 +67,7 @@ def select_from_camera():
 
             with open(IMAGE_PATH1, 'rb') as image_file:
                 img_base64 = base64.b64encode(image_file.read())
+
 
             url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (
                 SECRET_KEY)
@@ -169,6 +171,7 @@ def select_from_file():
     url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
     r = requests.post(url, data=img_base64)
 
+    num_plate = (json.dumps(r.json(), indent=2))
     data = r.json()
     print(data)
     results = data.get("results", [])
@@ -176,8 +179,6 @@ def select_from_file():
     first_result = results[0]
     plate_number = first_result.get("plate", "")
     print("plate_info===>" + plate_number)
-
-    # num_plate = (json.dumps(r.json(), indent=2))
     # info = (list(num_plate.split("candidates")))
     # print("======================")
     # print(info)
@@ -193,7 +194,6 @@ def select_from_file():
     # print("number : ", number)
     # number = number.replace('"', '')
     # number = number.lstrip()
-
     print(plate_number)
 
     getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(plate_number)
@@ -247,7 +247,7 @@ def select_from_file():
 lable1 = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome", font=FONT_BOLD, justify=CENTER, padx=10, pady=10,
                width=140, height=1).grid(row=0)
 
-parking_slot_lable = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD).place(relx=0.7, rely=0.1)
+parking_slot_lable = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD).place(relx=0.8, rely=0.1)
 
 # Creating a photoimage object to use image
 photo = PhotoImage(file="images/admin.png")
