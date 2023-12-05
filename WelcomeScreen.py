@@ -22,6 +22,7 @@ TEXT_COLOR = "#EAECEE"
 BG_WHITE = "#FFF"
 COLOR_GREEN = "#008000"
 COLOR_RED = "#FF0000"
+place = "delhi"
 
 FONT = "Helvetica 14"
 FONT_BOLD = "Helvetica 13 bold"
@@ -103,7 +104,9 @@ def select_from_camera():
                 entered_time = temp_time.strftime("%Y %m %d %H %M %S")
                 print("entered time ", entered_time)
                 # mycursor.execute("INSERT INTO users VALUES ('{}', '{}','{}')".format(number, entered_time,))
-                mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(plate_info, entered_time))
+                mycursor.execute(
+                    "INSERT INTO users VALUES ('{}', '{}','{}', '{}')".format(plate_info, entered_time, place,
+                                                                              "username"))
                 list_of_globals = globals()
                 list_of_globals['fare_text'] = "Vehicle details has been \n entered into the database"
                 show_fare()
@@ -202,7 +205,8 @@ def select_from_file():
         temp_time = datetime.datetime.now()
         entered_time = temp_time.strftime("%Y %m %d %H %M %S")
         print("entered time ", entered_time)
-        mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(plate_number, entered_time))
+        mycursor.execute(
+            "INSERT INTO users VALUES ('{}', '{}','{}', '{}')".format(plate_number, entered_time, place, "username"))
         list_of_globals = globals()
         list_of_globals['fare_text'] = "Vehicle details has been\nentered into the database"
         show_fare()
