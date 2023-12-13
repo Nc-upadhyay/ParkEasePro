@@ -38,7 +38,7 @@ def process_video():
             imgCrop = imgThres[y:y + h, x:x + w]
             count = cv2.countNonZero(imgCrop)
 
-            if count < 900:
+            if count < 800:
                 color = (0, 200, 0)
                 thic = 5
                 spaces += 1
@@ -247,6 +247,8 @@ if __name__ == "__main__":
             entered_time = temp_time.strftime("%Y %m %d %H %M %S")
             print("entered time ", entered_time)
             mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(plate_number, entered_time))
+            # mycursor.execute("Delete from users")
+
             list_of_globals = globals()
             list_of_globals['fare_text'] = "Vehicle details has been\nentered into the database"
             show_fare()
@@ -254,7 +256,7 @@ if __name__ == "__main__":
 
         else:
             for temp in templist:
-                # print(temp)
+                # print(temp)qqq
                 if plate_number == temp[0]:
                     print(temp[1])
                     # result = datetime.datetime.now() - temp[1]
