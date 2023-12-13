@@ -1,40 +1,44 @@
-from tkinter import *
+import cv2
+import easyocr
+from cv2.gapi.wip.draw import Image
 
-root = Tk()
-# root.attributes('-fullscreen',True) // this attribute show frame in full screen
-root.title("Parking System Design by DNR")
+harcascade = "haarcascade_russian_plate_number.xml"
 
+cap = cv2.VideoCapture(0)
+cap.set(3, 440)  # width
+cap.set(4, 480)  # height
 
-def showTitle():
-    titleLabel = Label(root, text="Smart Parking System", font=("Helvetica", 15), width=30, height=3)
-    titleLabel.pack()
+min_area = 500
+count = 0
 
+while True:
+    success, img = cap.read()
+    plateCasCade = cv2.CascadeClassifier(harcascade)
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    plate = plateCasCade.detectMultiScale(img_gray, 1.1, 4)
+    for (x, y, w, h) in plate:
+        area = w * h
+        if area > min_area:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(img, "number plate ", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 255), 2)
 
-def select_Image_From_System():
-    print("ok")
+            img_crop = img[y:y + h, x:x + w]
+            cv2.imshow("Vehicle Number  ", img_crop)
 
+    cv2.imshow("result", img)
 
-def exit_command():
-    root.quit()
+    if (cv2.waitKey(1) & 0xFF == ord('s')):
+        cv2.imwrite("plates/scaned_image" + str(count) + ".jpg", img_crop)
+        cv2.rectangle(img, (0, 200), (640, 300), (0, 255, 0), cv2.FILLED)
+        cv2.putText(img, "plated Saved", (150, 265), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (0, 0, 255), 2)
+        cv2.imshow("Result ", img)
+        cv2.waitKey(500)
+        count += 1
+        if (cv2.waitKey(1) & 0xFF == ord('q')):
+            break
 
-
-showTitle()
-exit_button = Button(root, text="EXIT", command=exit_command, bg="brown", font=("Helvetica", 15), fg="white", bd=4,
-                     padx=2, pady=4)
-exit_button.pack()
-exit_button.place(relx="0.8", rely="0.9")
-
-image_from_file_btn = Button(root, text="Select Image From File System", bg="yellow", font=("Helvetica", 15),
-                                fg="green", bd=4, padx=2, pady=4, command=select_Image_From_System)
-image_from_file_btn.pack()
-image_from_file_btn.place(relx="0.05", rely="0.2")
-
-# titleLabel.grid(column=0,row=1,padx=150,pady=5) // show label in specific location
-# myLabel.pack()
-# Window frame size
-root.geometry("600x600")
-# set minimum window size value
-root.minsize(200, 200)
-# set maximum window size value
-root.maxsize(800, 800)
-root.mainloop()
+# image = Image("plates/scaned_image0.jpg")
+reader = easyocr.Reader(['en'])
+output = reader.readtext('plates/scaned_image0.jpg')
+cord = output[0][1]  # number plate
+print(cord)

@@ -11,6 +11,7 @@ from PIL import ImageTk, Image
 from authKey import SECRET_KEY
 from dbConnection import mycursor, connection
 
+import arcade
 
 # GUI
 root = Tk()
@@ -23,7 +24,6 @@ TEXT_COLOR = "#EAECEE"
 BG_WHITE = "#FFF"
 COLOR_GREEN = "#008000"
 COLOR_RED = "#FF0000"
-place = "delhi"
 
 FONT = "Helvetica 14"
 FONT_BOLD = "Helvetica 13 bold"
@@ -68,35 +68,27 @@ def select_from_camera():
             with open(IMAGE_PATH1, 'rb') as image_file:
                 img_base64 = base64.b64encode(image_file.read())
 
-
             url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (
                 SECRET_KEY)
             r = requests.post(url, data=img_base64)
-            data = r.json()
-            print(data)
-            results = data.get("results", [])
-            # if results is None
-            first_result = results[0]
-            plate_info = first_result.get("plate", "")
-            print("plate_info===>" + plate_info)
 
-            # num_plate = (json.dumps(r.json(), indent=2))
-            # info = (list(num_plate.split("candidates")))
-            # print(info)
-            # plate = info[0]
-            # plate = plate.split(',')[0:3]
-            # p = plate[1]
-            # print("p "+p)
-            # p1 = p.split(":")
-            # number = p1[1]
-            # number = number.replace('"', '')
-            # number = number.lstrip()
+            num_plate = (json.dumps(r.json(), indent=2))
+            info = (list(num_plate.split("candidates")))
+            print(info)
+            plate = info[0]
+            plate = plate.split(',')[0:3]
+            p = plate[1]
+            print("p "+p)
+            p1 = p.split(":")
+            number = p1[1]
+            number = number.replace('"', '')
+            number = number.lstrip()
             print("==========number plate===============")
-            print(plate_info)
-            # print("plate "+plate[0])
+            print(number)
+            print("plate "+plate[0])
             # print("plate "+plate)
 
-            getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(plate_info)
+            getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(number)
             mycursor.execute(getnumber)
             templist = list(mycursor)
             # print(len(templist))
@@ -106,9 +98,7 @@ def select_from_camera():
                 entered_time = temp_time.strftime("%Y %m %d %H %M %S")
                 print("entered time ", entered_time)
                 # mycursor.execute("INSERT INTO users VALUES ('{}', '{}','{}')".format(number, entered_time,))
-                mycursor.execute(
-                    "INSERT INTO users VALUES ('{}', '{}','{}', '{}')".format(plate_info, entered_time, place,
-                                                                              "username"))
+                mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(number, entered_time))
                 list_of_globals = globals()
                 list_of_globals['fare_text'] = "Vehicle details has been \n entered into the database"
                 show_fare()
@@ -116,7 +106,7 @@ def select_from_camera():
             else:
                 for temp in templist:
                     # print(temp)
-                    if plate_info == temp[0]:
+                    if number == temp[0]:
                         print(temp[1])
                         # result = datetime.datetime.now() - temp[1]
                         current_time = datetime.datetime.now()
@@ -172,31 +162,24 @@ def select_from_file():
     r = requests.post(url, data=img_base64)
 
     num_plate = (json.dumps(r.json(), indent=2))
-    data = r.json()
-    print(data)
-    results = data.get("results", [])
-    # if results is None
-    first_result = results[0]
-    plate_number = first_result.get("plate", "")
-    print("plate_info===>" + plate_number)
-    # info = (list(num_plate.split("candidates")))
-    # print("======================")
-    # print(info)
-    # print(num_plate)
-    # plate = info[1]
-    # print("plate : ", plate)
-    # plate = plate.split(',')[0:3]
-    # p = plate[1]
-    # print("p : ", p)
-    # p1 = p.split(":")
-    # print("p1 : ", p1)
-    # number = p1[1]
-    # print("number : ", number)
-    # number = number.replace('"', '')
-    # number = number.lstrip()
-    print(plate_number)
+    info = (list(num_plate.split("candidates")))
+    print("======================")
+    print(info)
+    print(num_plate)
+    plate = info[1]
+    print("plate : ", plate)
+    plate = plate.split(',')[0:3]
+    p = plate[1]
+    print("p : ", p)
+    p1 = p.split(":")
+    print("p1 : ", p1)
+    number = p1[1]
+    print("number : ", number)
+    number = number.replace('"', '')
+    number = number.lstrip()
+    print(number)
 
-    getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(plate_number)
+    getnumber = "SELECT * FROM users WHERE number_plate = '{}'".format(number)
     mycursor.execute(getnumber)
     templist = list(mycursor)
     # print(len(templist))
@@ -205,8 +188,7 @@ def select_from_file():
         temp_time = datetime.datetime.now()
         entered_time = temp_time.strftime("%Y %m %d %H %M %S")
         print("entered time ", entered_time)
-        mycursor.execute(
-            "INSERT INTO users VALUES ('{}', '{}','{}', '{}')".format(plate_number, entered_time, place, "username"))
+        mycursor.execute("INSERT INTO users VALUES ('{}', '{}')".format(number, entered_time))
         list_of_globals = globals()
         list_of_globals['fare_text'] = "Vehicle details has been\nentered into the database"
         show_fare()
@@ -215,7 +197,7 @@ def select_from_file():
     else:
         for temp in templist:
             # print(temp)
-            if plate_number == temp[0]:
+            if number == temp[0]:
                 print(temp[1])
                 # result = datetime.datetime.now() - temp[1]
                 current_time = datetime.datetime.now()
@@ -268,9 +250,9 @@ def countNumberOfSlotInDB():
     return n
 
 
-def createLable(param, param1, color, text):
+def createLable(param, param1, color,text):
     lable = Label(root, bg=color, fg=TEXT_COLOR, padx=3, pady=1, text=text, font=FONT_BOLD).place(relx=param,
-                                                                                                  rely=param1)
+                                                                                                 rely=param1)
 
 
 def showBoxes():
@@ -283,11 +265,11 @@ def showBoxes():
         temp = r
         for col in range(5):
             if (count_fill_color <= n):
-                createLable(temp, c, COLOR_RED, "F")
+                createLable(temp, c, COLOR_RED,"F")
             else:
-                createLable(temp, c, COLOR_GREEN, "E")
+                createLable(temp, c, COLOR_GREEN,"E")
             temp += increase
-            count_fill_color += 1
+            count_fill_color+=1
         c += 0.1
 
 
