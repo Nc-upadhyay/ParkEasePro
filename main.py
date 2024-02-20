@@ -1,3 +1,5 @@
+import sys
+
 import cv2
 import easyocr
 from cv2.gapi.wip.draw import Image
@@ -34,8 +36,13 @@ while True:
         cv2.imshow("Result ", img)
         cv2.waitKey(500)
         count += 1
-        if (cv2.waitKey(1) & 0xFF == ord('q')):
-            break
+        reader = easyocr.Reader(['en'])
+        output = reader.readtext('plates/scaned_image0.jpg')
+        cord = output[0][1]  # number plate
+        print(cord)
+        sys.exit()
+    if (cv2.waitKey(1) & 0xFF == ord('q')):
+        cv2.destroyAllWindows()
 
 # image = Image("plates/scaned_image0.jpg")
 reader = easyocr.Reader(['en'])

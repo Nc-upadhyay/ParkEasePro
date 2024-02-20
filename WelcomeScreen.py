@@ -273,7 +273,7 @@ def showBoxes():
         c += 0.1
 
 
-showBoxes()
+# showBoxes()
 image_from_file_button.place(relx=0.03, rely=0.1)
 image_from_camera_button.place(relx=0.3, rely=0.10)
 root.mainloop()
