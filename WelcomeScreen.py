@@ -11,7 +11,7 @@ from PIL import ImageTk, Image
 from authKey import SECRET_KEY
 from dbConnection import mycursor, connection
 
-import arcade
+# import arcade
 
 # GUI
 root = Tk()
