@@ -12,10 +12,10 @@
 import mysql.connector
 
 # Replace these with your MySQL server details
-host = "your_host"
-user = "your_user"
-password = "your_password"
-database = "your_database"
+host='localhost',
+user='root',
+password='pwd12345',
+database='users'
 
 # Establish a connection to the MySQL server
 try:

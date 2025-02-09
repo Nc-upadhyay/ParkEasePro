@@ -91,28 +91,50 @@ def process_video():
 
 if __name__ == "__main__":
     # Run process_video in a separate process
-    # video_process = multiprocessing.Process(target=process_video)
-    # video_process.start()
+    video_process = multiprocessing.Process(target=process_video)
+    video_process.start()
 
+    # root = Tk()
+    # root.title("Welcome Screen")
+    # # root.attributes('-fullscreen',True)
+    # root.configure(background='#17202A')
+    # BG_GRAY = "#ABB2B9"
+    # BG_COLOR = "#17202A"
+    # TEXT_COLOR = "#EAECEE"
+    # BG_WHITE = "#FFF"
+    # COLOR_GREEN = "#008000"
+    # COLOR_RED = "#FF0000"
+    #
+    # FONT = "Helvetica 14"
+    # FONT_BOLD = "Helvetica 13 bold"
+    #
+    # root.geometry("1300x800")
+    # # set minimum window size value
+    # root.minsize(700, 700)
+    # # set maximum window size value
+    # root.maxsize(1350, 800)
+
+    # Colors and Fonts
+    BG_COLOR = "#1E1E1E"
+    TEXT_COLOR = "#FFFFFF"
+    COLOR_RED = "#FF3B3B"
+    COLOR_GREEN = "#4CAF50"
+    BUTTON_BG = "#FFD700"
+    BUTTON_FG = "#006400"
+    FONT_BOLD = ("Helvetica", 16, "bold")
+
+    # Root Window
     root = Tk()
     root.title("Welcome Screen")
-    # root.attributes('-fullscreen',True)
-    root.configure(background='#17202A')
-    BG_GRAY = "#ABB2B9"
-    BG_COLOR = "#17202A"
-    TEXT_COLOR = "#EAECEE"
-    BG_WHITE = "#FFF"
-    COLOR_GREEN = "#008000"
-    COLOR_RED = "#FF0000"
-
-    FONT = "Helvetica 14"
-    FONT_BOLD = "Helvetica 13 bold"
-
+    # root.geometry("800x500")
+    root.configure(bg=BG_COLOR)
     root.geometry("1300x800")
     # set minimum window size value
     root.minsize(700, 700)
     # set maximum window size value
     root.maxsize(1350, 800)
+
+
 
     global fare_text
     fare_text = "Nothing to Show"
@@ -142,6 +164,7 @@ if __name__ == "__main__":
 
                 reader = easyocr.Reader(['en'])
                 output = reader.readtext('/Users/acer/Documents/GitHub/ParkEasePro/first1.jpg')
+                print("OCR:>>>",output)
                 print("OUTPUT>>>>>>>>>>>>>>>>>>>", (output[0])[1])
 
                 my_image1 = ImageTk.PhotoImage(Image.open(IMAGE_PATH1))
@@ -237,9 +260,9 @@ if __name__ == "__main__":
 
         url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
         r = requests.post(url, data=img_base64)
-        reader = easyocr.Reader(['en'])
-        output = reader.readtext('/Users/acer/Documents/GitHub/ParkEasePro/first1.jpg')
-        print("OUTPUT>>>>>>>>>>>>>>>>>>>", (output[0])[1])
+        # reader = easyocr.Reader(['en'])
+        # output = reader.readtext('/Users/acer/Documents/GitHub/ParkEasePro/first1.jpg')
+        # print("OUTPUT>>>>>>>>>>>>>>>>>>>", (output[0])[1])
 
         data = r.json()
         print(data)
@@ -298,20 +321,51 @@ if __name__ == "__main__":
         showBoxes()
 
 
-    lable1 = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome", font=FONT_BOLD, justify=CENTER, padx=10, pady=10,
-                   width=140, height=1).grid(row=0)
+    # lable1 = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome", font=FONT_BOLD, justify=CENTER, padx=10, pady=10,
+    #                width=140, height=1).grid(row=0)
 
-    parking_slot_lable = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD).place(relx=0.7, rely=0.1)
+    # Welcome Label
+    lable1 = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome", font=("Helvetica", 20, "bold"))
+    lable1.pack(pady=40)
+
+    # parking_slot_lable = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD).place(relx=0.7, rely=0.1)
+    # Slot Label
+    parking_slot_label = Label(root, bg=BG_COLOR, fg=TEXT_COLOR, text="Slot", font=FONT_BOLD)
+    parking_slot_label.place(relx=0.78, rely=0.2)
 
     # Creating a photoimage object to use image
     photo = PhotoImage(file="images/admin.png")
 
-    # Button(root, text='Click Me !', ).pack(side=TOP)
-    image_from_file_button = Button(root, text="Select Image From File System", bg="yellow", font=("Helvetica", 15),
-                                    fg="green", bd=4, padx=1, pady=1, command=select_from_file)
-    image_from_camera_button = Button(root, text="Image From Camera", bg="yellow", font=("Helvetica", 15),
-                                      fg="green", bd=4, padx=1, pady=1, command=select_from_camera)
+    #2# def create_button(text, command, x_pos):
+    #     return Button(root, text=text, bg=BUTTON_BG, fg=BUTTON_FG, font=("Helvetica", 14, "bold"),
+    #                   bd=3, padx=10, pady=5, relief=RAISED, activebackground="#FFC300", activeforeground="#006400",
+    #                   cursor="hand2", width=22, command=command).place(relx=x_pos, rely=0.1)
 
+    # def create_button(text, command, x_pos):
+    #     return Button(root, text=text, bg=BUTTON_BG, fg=BUTTON_FG, font=("Helvetica", 14, "bold"),
+    #                   bd=3, padx=10, pady=5, relief=RAISED, activebackground="#FFC300", activeforeground="#006400",
+    #                   cursor="hand2", width=22, command=command).place(relx=x_pos, rely=0.1)
+
+    # Pehle se buttons create karna, taki bar-bar naye buttons na banaye jaye
+    button_file = Button(root, text="Select Image From File System", bg=BUTTON_BG, fg=BUTTON_FG,
+                         font=("Helvetica", 14, "bold"), bd=3, relief=RAISED, activebackground="#FFC300",
+                         activeforeground="#006400", cursor="hand2", command=select_from_file)
+    button_file.place(relx=0.05, rely=0.15, relwidth=0.3)
+
+    button_camera = Button(root, text="Image From Camera", bg=BUTTON_BG, fg=BUTTON_FG,
+                           font=("Helvetica", 14, "bold"), bd=3, relief=RAISED, activebackground="#FFC300",
+                           activeforeground="#006400", cursor="hand2", command=select_from_camera)
+    button_camera.place(relx=0.4, rely=0.15, relwidth=0.3)
+
+
+    # Button(root, text='Click Me !', ).pack(side=TOP)
+    # image_from_file_button = Button(root, text="Select Image From File System", bg="yellow", font=("Helvetica", 15),
+    #                                 fg="green", bd=4, padx=1, pady=1, command=select_from_file)
+    # image_from_camera_button = Button(root, text="Image From Camera", bg="yellow", font=("Helvetica", 15),
+    #                                   fg="green", bd=4, padx=1, pady=1, command=select_from_camera)
+
+    # create_button("Select Image From File System", select_from_file, 0.05)
+    # create_button("Image From Camera", select_from_camera, 0.4)
 
     def countNumberOfSlotInDB():
         query = "select count(*) from users"
@@ -322,35 +376,74 @@ if __name__ == "__main__":
         return n
 
 
-    def createLable(param, param1, color, text):
-        lable = Label(root, bg=color, fg=TEXT_COLOR, padx=3, pady=1, text=text, font=FONT_BOLD).place(relx=param,
-                                                                                                      rely=param1)
+    # def createLable(param, param1, color, text):
+    #     lable = Label(root, bg=color, fg=TEXT_COLOR, padx=3, pady=1, text=text, font=FONT_BOLD).place(relx=param,
+    #                                                                                                   rely=param1)
 
+    def create_label(x, y, color, text):
+        return Label(root, bg=color, fg=TEXT_COLOR, padx=10, pady=5, text=text, font=("Helvetica", 14, "bold"),
+                     relief=RIDGE, width=3).place(relx=x, rely=y)
+
+
+    # def showBoxes():
+    #     n = countNumberOfSlotInDB()
+    #     r = 0.6
+    #     c = 0.2
+    #     increase = 0.06
+    #     count_fill_color = 1
+    #     for row in range(6):
+    #         temp = r
+    #         for col in range(5):
+    #             if (count_fill_color <= n):
+    #                 createLable(temp, c, COLOR_RED, "F")
+    #             else:
+    #                 createLable(temp, c, COLOR_GREEN, "E")
+    #             temp += increase
+    #             count_fill_color += 1
+    #         c += 0.1
 
     def showBoxes():
         n = countNumberOfSlotInDB()
-        r = 0.6
-        c = 0.2
-        increase = 0.06
-        count_fill_color = 1
-        for row in range(6):
-            temp = r
+        x, y = 0.65, 0.3
+        x_inc, y_inc = 0.07, 0.1
+        count = 1
+
+        for row in range(5):
+            temp_x = x
             for col in range(5):
-                if (count_fill_color <= n):
-                    createLable(temp, c, COLOR_RED, "F")
-                else:
-                    createLable(temp, c, COLOR_GREEN, "E")
-                temp += increase
-                count_fill_color += 1
-            c += 0.1
+                color, text = (COLOR_RED, "F") if count <= n else (COLOR_GREEN, "E")
+                create_label(temp_x, y, color, text)
+                temp_x += x_inc
+                count += 1
+            y += y_inc
 
 
+    def adjust_layout(event):
+        width = root.winfo_width()
+
+        # Adjust font sizes dynamically
+        lable1.config(font=("Helvetica", int(width * 0.02), "bold"))
+        parking_slot_label.config(font=("Helvetica", int(width * 0.02), "bold"))
+
+        # Adjust button width dynamically
+        button_file.config(font=("Helvetica", int(width * 0.015), "bold"))
+        button_camera.config(font=("Helvetica", int(width * 0.015), "bold"))
+
+
+    root.bind("<Configure>", adjust_layout)
     showBoxes()
-    image_from_file_button.place(relx=0.03, rely=0.1)
-    image_from_camera_button.place(relx=0.3, rely=0.10)
+
     root.mainloop()
 
+    # showBoxes()
+    # root.mainloop()
+
+    # showBoxes()
+    # image_from_file_button.place(relx=0.03, rely=0.1)
+    # image_from_camera_button.place(relx=0.3, rely=0.10)
+    # root.mainloop()
+
     # Wait for the video_process to finish
-    # video_process.join()
+    video_process.join()
 
 
